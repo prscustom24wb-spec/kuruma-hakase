@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<title>くるま博士！iPad</title>
+<style>
+:root{--ink:#18212b;--accent:#ff6b35;--gold:#ffd43b}*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Yu Gothic",sans-serif;background:linear-gradient(#dff3ff,#f8fbff);color:var(--ink);overflow:hidden}
+button{font:inherit;border:0;touch-action:manipulation}.screen{display:none;height:100dvh;padding:max(14px,env(safe-area-inset-top)) 18px max(14px,env(safe-area-inset-bottom))}
+.active{display:flex!important;flex-direction:column}.home{justify-content:center;align-items:center;text-align:center;gap:14px}
+.logo{font-size:clamp(38px,7vw,68px);font-weight:900;text-shadow:0 5px #fff}.sub{font-size:clamp(16px,3vw,24px);font-weight:800;margin-bottom:10px}
+.menu{width:min(620px,94vw);display:grid;gap:12px}.big{min-height:76px;border-radius:24px;font-weight:900;font-size:clamp(20px,4vw,30px);box-shadow:0 7px #0002;padding:14px}.start{background:var(--accent);color:#fff}.ff{background:#171c23;color:#fff}.garageBtn{background:var(--gold)}
+.small{background:#fff;border-radius:18px;padding:12px 18px;font-weight:800;box-shadow:0 3px #ccd5dc}.top{display:flex;align-items:center;justify-content:space-between;min-height:52px}.score{font-weight:900;font-size:22px}
+.progress{height:12px;background:#d5dee5;border-radius:99px;overflow:hidden;margin:8px 0 12px}.bar{height:100%;width:0;background:var(--accent);transition:.3s}.quiz{align-items:center}
+.question{font-weight:900;font-size:clamp(20px,4vw,30px);margin:4px 0 10px;text-align:center}
+.photo{width:min(850px,96vw);height:min(44dvh,430px);background:#fff;border-radius:28px;box-shadow:0 8px 25px #7892a244;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}.photo img{width:100%;height:100%;object-fit:cover}.fallback{font-size:100px}
+.sound{position:absolute;right:12px;bottom:12px;background:#fff;border-radius:50%;width:70px;height:70px;font-size:32px;box-shadow:0 5px 15px #0003}.hint{font-weight:800;opacity:.7;margin-top:8px}
+.choices{width:min(850px,96vw);display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.choice{min-height:66px;border-radius:20px;background:#fff;font-weight:900;font-size:clamp(17px,3.2vw,24px);box-shadow:0 5px #cbd5dc;padding:10px}.correct{background:#7ee58e!important}.wrong{background:#ff8b8b!important}
+.overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:#0007;z-index:10}.overlay.show{display:flex}.card{width:min(700px,90vw);background:#fff;border-radius:34px;padding:28px;text-align:center;box-shadow:0 15px 50px #0006}.emoji{font-size:80px}.title{font-size:42px;font-weight:900}.stars{font-size:52px;color:var(--gold)}
+.drive{position:absolute;bottom:12%;left:-35%;font-size:110px;animation:drive 1.6s linear forwards}@keyframes drive{to{left:110%}}
+.garage{overflow:auto;align-items:center}.grid{width:min(950px,96vw);display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding-bottom:20px}.car{background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 5px #cbd5dc}.car img{width:100%;height:150px;object-fit:cover;background:#e9eef2}.info{padding:12px}.name{font-size:20px;font-weight:900}.tag{display:inline-block;background:#222;color:#fff;border-radius:99px;padding:4px 8px;font-size:12px;margin-top:5px}.locked{filter:grayscale(1);opacity:.6}
+@media(min-width:800px){.grid{grid-template-columns:repeat(3,1fr)}}@media(orientation:landscape) and (max-height:600px){.photo{height:48dvh}.choice{min-height:54px}.question{margin:0}.sound{width:58px;height:58px}}
+
+.coin{position:fixed;z-index:20;font-size:52px;pointer-events:none;animation:coinFly 1s ease-out forwards}
+@keyframes coinFly{0%{transform:translate(0,0) scale(.5) rotate(0);opacity:0}20%{opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(1.15) rotate(360deg);opacity:0}}
+.levelbox{display:flex;align-items:center;gap:8px;font-weight:900}.xp{width:130px;height:12px;background:#d5dee5;border-radius:99px;overflow:hidden}.xp i{display:block;height:100%;width:0;background:#ffd43b;transition:.5s}
+.toast{position:fixed;left:50%;top:12%;transform:translateX(-50%) scale(.7);z-index:30;background:#fff;border-radius:25px;padding:15px 24px;font-size:25px;font-weight:900;box-shadow:0 10px 30px #0004;opacity:0;pointer-events:none}
+.toast.show{animation:toast .9s ease-out forwards}@keyframes toast{0%{opacity:0;transform:translateX(-50%) scale(.7)}25%,75%{opacity:1;transform:translateX(-50%) scale(1)}100%{opacity:0;transform:translateX(-50%) scale(1)}}
+.garageHero{width:min(950px,96vw);background:#fff;border-radius:25px;padding:14px;margin-bottom:14px;box-shadow:0 5px #cbd5dc;text-align:center}.garageHero b{font-size:22px}
+
+.stagePanel{width:min(850px,96vw);background:#fff;border-radius:25px;padding:14px 18px;box-shadow:0 5px #cbd5dc;margin:8px 0;text-align:center}
+.stageTitle{font-size:22px;font-weight:900}.stageDesc{font-size:14px;font-weight:700;opacity:.75}.stageLocked{filter:grayscale(1);opacity:.55}
+.specbox{margin-top:15px;display:grid;grid-template-columns:1fr 1fr;gap:8px}.specitem{background:#f1f5f8;border-radius:15px;padding:9px}.specitem b{display:block;font-size:12px;opacity:.65}.specitem strong{font-size:20px}
+.unlock{font-size:20px;font-weight:900;margin-top:10px}
+
+.quizType{display:inline-block;background:#222;color:#fff;border-radius:99px;padding:5px 11px;font-size:13px;margin-bottom:5px}
+.meter{margin-top:10px;text-align:left}.meterLabel{display:flex;justify-content:space-between;font-size:13px;font-weight:900}.meterTrack{height:10px;background:#dce4e9;border-radius:99px;overflow:hidden}.meterFill{height:100%;width:0;background:#ff6b35;transition:.6s}
+.priceQ{font-size:14px;font-weight:900;margin:8px 0 0}
+</style></head><body>
+
+<section id="home" class="screen active home">
+<div class="logo">🏎️ くるま博士！</div><div class="sub">みて・きいて・あてよう！</div>
+<div id="homeStage" class="stagePanel"></div><div class="menu"><button class="big start" onclick="start(false)">🏁 クイズ スタート！</button>
+<button class="big ff" onclick="start(true)">🎬 ワイルド・スピード モード</button>
+<button class="big garageBtn" onclick="garage()">🏆 くるまガレージ</button></div></section>
+
+<section id="quiz" class="screen quiz"><div class="top"><button class="small" onclick="home()">← もどる</button><b id="mode">🏁 クイズ</b><div class="levelbox">Lv.<span id="level">1</span><span class="xp"><i id="xp"></i></span></div><b id="score">⭐ 0</b></div>
+<div class="progress"><div id="bar" class="bar"></div></div><div id="question" class="question"></div>
+<div class="photo"><img id="pic"><div id="fallback" class="fallback" style="display:none">🏎️</div><button class="sound" onclick="sound()">🔊</button></div>
+<div class="hint">🔊 きいてから こたえてみよう！</div><div id="choices" class="choices"></div></section>
+
+<section id="garage" class="screen garage"><div class="top" style="width:100%"><button class="small" onclick="home()">← もどる</button><b>🏆 ガレージ</b><span></span></div><div class="garageHero"><b id="garageStats"></b><div id="garageMessage">クイズでどんどん車を集めよう！</div></div><h2 id="count"></h2><div id="grid" class="grid"></div></section>
+<div id="toast" class="toast"></div><div id="overlay" class="overlay"><div class="card"><div id="emoji" class="emoji">🎉</div><div id="title" class="title">せいかい！</div><div id="text"></div><button class="big start" style="width:100%;margin-top:18px" onclick="next()">つぎのくるま ▶</button></div></div>
+
+<script>
+const C=[
+["トヨタ スープラ","1994 / A80",1,"340ps","約600万円","約250km/h","約4.6秒","https://commons.wikimedia.org/wiki/Special:Redirect/file/1994%20Toyota%20Supra%20%2826036049312%29.jpg"],
+["日産 スカイライン GT-R","R34",1,"280ps","約500万円","約250km/h","約4.9秒","https://commons.wikimedia.org/wiki/Special:Redirect/file/Nissan%20Skyline%20GT-R%20R34.jpg"],
+["マツダ RX-7","FD3S",1,"280ps","約300万円","約255km/h","約5.3秒","https://commons.wikimedia.org/wiki/Special:Redirect/file/Mazda%20RX-7%20FD3S.jpg"],
+["ダッジ チャージャー","1970",1,"425hp","約1,000万円〜","約220km/h","約5.4秒","https://commons.wikimedia.org/wiki/Special:Redirect/file/1970%20Dodge%20Charger%20R%5CT.jpg"],
+["シボレー カマロ","5代目",1,"426hp","約500万円〜","約250km/h","約5.0秒","https://commons.wikimedia.org/wiki/Special:Redirect/file/2010%20Chevrolet%20Camaro%20SS.jpg"],
+["ランボルギーニ アヴェンタドール","V12",0,"700ps","約4,000万円〜","約350km/h","約2.9秒","https://commons.wikimedia.org/wiki/Special:Redirect/file/Lamborghini%20Aventador%20LP700-4.jpg"],
+["フェラーリ 458 イタリア","V8",0,"570ps","約3,000万円〜","約340km/h","約3.4秒","https://commons.wikimedia.org/wiki/Special:Redirect/file/Ferrari%20458%20Italia%20-%20Flickr%20-%20Alexandre%20Pr%C3%A9vot.jpg"],
+["ポルシェ 911","911",0,"385ps〜","約1,500万円〜","約300km/h","約4.2秒","https://commons.wikimedia.org/wiki/Special:Redirect/file/Porsche%20911%20Carrera%20S%20%28991%29.jpg"],
+["マクラーレン 720S","V8",0,"720ps","約3,000万円〜","約341km/h","約2.9秒","https://commons.wikimedia.org/wiki/Special:Redirect/file/McLaren%20720S.jpg"],
+["スバル WRX STI","AWD",0,"329ps","約500万円〜","約255km/h","約5.2秒","https://commons.wikimedia.org/wiki/Special:Redirect/file/2018%20Subaru%20WRX%20STI.jpg"],
+["フォード GT","V6ツインターボ",0,"647hp","約5,000万円〜","約348km/h","約2.9秒","https://commons.wikimedia.org/wiki/Special:Redirect/file/Ford%20GT%20%282017%29.jpg"],
+["日産 フェアレディZ","Z34",0,"336ps","約400万円〜","約250km/h","約5.0秒","https://commons.wikimedia.org/wiki/Special:Redirect/file/2009%20Nissan%20370Z.jpg"]
+];
+let qs=[],i=0,pts=0,ff=false,done=false,ctx,combo=0,qType="car";
+const $=x=>document.getElementById(x),sh=x=>{document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));$(x).classList.add("active")};
+function home(){hide();renderHomeStage();sh("home")} function hide(){$("overlay").classList.remove("show")}
+function mix(a){return [...a].sort(()=>Math.random()-.5)}
+function progress(){
+ let xp=Number(localStorage.getItem("xp")||0), level=Math.floor(xp/10)+1, inLevel=xp%10;
+ if($("level"))$("level").textContent=level;
+ if($("xp"))$("xp").style.width=(inLevel*10)+"%";
+}
+function addXP(n){
+ let old=Math.floor(Number(localStorage.getItem("xp")||0)/10)+1;
+ let xp=Number(localStorage.getItem("xp")||0)+n; localStorage.setItem("xp",xp);
+ let now=Math.floor(xp/10)+1; progress();
+ if(now>old) showToast("🎊 レベルアップ！ Lv."+now);
+}
+function showToast(t){let x=$("toast");x.textContent=t;x.classList.remove("show");void x.offsetWidth;x.classList.add("show")}
+function coinBurst(){
+ for(let k=0;k<7;k++){let e=document.createElement("div");e.className="coin";e.textContent="🪙";e.style.left=(45+Math.random()*10)+"%";e.style.top=(35+Math.random()*15)+"%";e.style.setProperty("--dx",(Math.random()*260-130)+"px");e.style.setProperty("--dy",(-120-Math.random()*180)+"px");document.body.appendChild(e);setTimeout(()=>e.remove(),1000)}
+}
+function unlockedCount(){return JSON.parse(localStorage.getItem("cars")||"[]").length}
+function stageInfo(){
+ let n=unlockedCount();
+ if(n>=12)return {title:"👑 STAGE MAX｜伝説のくるま博士",desc:"全車コンプリート！伝説モード解放！",need:12};
+ if(n>=10)return {title:"🎬 STAGE 3｜ワイルド・スピード",desc:"映画で大活躍の車に挑戦！",need:10};
+ if(n>=5)return {title:"🏁 STAGE 2｜スーパーカー上級",desc:"ちょっと難しい車も登場！",need:5};
+ return {title:"🚗 STAGE 1｜スーパーカー入門",desc:`あと ${5-n} 台で STAGE 2！`,need:0};
+}
+function renderHomeStage(){
+ let st=stageInfo();$("homeStage").innerHTML=`<div class="stageTitle">${st.title}</div><div class="stageDesc">${st.desc}</div>`;
+}
+function start(f){renderHomeStage();ff=f;pts=0;i=0;combo=0;progress();let n=unlockedCount(); let pool=C.filter(x=>!f||x[2]); if(!f && n>=10) pool=C; qs=mix(pool).slice(0,Math.min(10,pool.length));$("mode").textContent=f?"🎬 ワイルド・スピード":"🏁 クイズ";sh("quiz");render()}
+function render(){
+ done=false;
+ let c=qs[i], pool=mix(C.filter(x=>x[0]!=c[0])).slice(0,3);
+ qType=(Math.random()<.42)?"speed":(Math.random()<.55?"price":"car");
+ $("score").textContent="⭐ "+pts;$("bar").style.width=(i/qs.length*100)+"%";
+ $("pic").src=c[7]; $("pic").style.display="block"; $("fallback").style.display="none";
+ $("pic").onerror=()=>{$("pic").style.display="none";$("fallback").style.display="block"};
+ let title,opts;
+ if(qType==="price"){
+   title="💰 このくるまの ねだんは どれ？";
+   opts=mix([c[4],...pool.map(x=>x[4])]);
+ }else if(qType==="speed"){
+   title="💨 このくるまの さいこうそくは？";
+   opts=mix([c[5],...pool.map(x=>x[5])]);
+ }else{
+   title="🏎️ このくるまは なーんだ？";
+   opts=mix([c[0],...pool.map(x=>x[0])]);
+ }
+ $("question").innerHTML=`${i+1} / ${qs.length}<br><span class="quizType">${title}</span>`;
+ let box=$("choices");box.innerHTML="";
+ opts.forEach(val=>{
+   let b=document.createElement("button");b.className="choice";b.textContent=val;
+   let correct=(qType==="car"?val===c[0]:qType==="price"?val===c[4]:val===c[5]);
+   b.onclick=()=>answer(correct,b,c);
+   box.appendChild(b)
+ });
+}
+function answer(ok,b,c){if(done)return;done=true;document.querySelectorAll(".choice").forEach(x=>x.disabled=true);b.classList.add(ok?"correct":"wrong");if(ok){pts++;combo++;unlock(c[0]);addXP(1+Math.min(combo,3));coinBurst();showToast(combo>=3?"🔥 "+combo+"れんぞく！":"🪙 コインゲット！");sound(true)}else document.querySelectorAll(".choice").forEach(x=>{if(x.textContent===c[0])x.classList.add("correct")});$("emoji").textContent=ok?"🎉":"💨";$("title").textContent=ok?"せいかい！":"おしい！";$("text").innerHTML=ok?`<b>${c[0]}</b> をゲット！<div class="specbox"><div class="specitem"><b>エンジン</b><strong>${c[1]}</strong></div><div class="specitem"><b>パワー</b><strong>${c[3]}</strong></div><div class="specitem"><b>最高速</b><strong>${c[5]}</strong></div><div class="specitem"><b>0→100km/h</b><strong>${c[6]}</strong></div><div class="specitem" style="grid-column:1/-1"><b>💰 だいたいの価格</b><strong>${c[4]}</strong></div></div><div class="stars">★</div><div class="drive">🏎️💨</div>`:`せいかいは <b>${c[0]}</b>！<br>つぎはいけるよ！`;$("overlay").classList.add("show")}
+function next(){hide();i++;if(i>=qs.length){finish()}else render()}
+function finish(){let st=pts>=9?"★★★":pts>=6?"★★":"★";$("overlay").innerHTML=`<div class="card"><div class="emoji">🏆</div><div class="title">クイズ おしまい！</div><div class="stars">${st}</div><h2>${pts} / ${qs.length} もん せいかい！</h2><button class="big start" style="width:100%" onclick="start(ff)">もういちど！</button><button class="small" style="width:100%;margin-top:10px" onclick="home()">ホームへ</button></div>`;$("overlay").classList.add("show")}
+function unlock(n){let a=JSON.parse(localStorage.getItem("cars")||"[]");if(!a.includes(n)){a.push(n);localStorage.setItem("cars",JSON.stringify(a))}}
+function garage(){sh("garage");let u=JSON.parse(localStorage.getItem("cars")||"[]");$("count").textContent=`${u.length} / ${C.length} だい！`;let xp=Number(localStorage.getItem("xp")||0),lv=Math.floor(xp/10)+1;$("garageStats").textContent=`🏆 Lv.${lv}　⭐ ${xp} XP　🚗 ${u.length}/${C.length} 台　${stageInfo().title}`;$("grid").innerHTML=C.map(c=>{let o=u.includes(c[0]);return `<div class="car ${o?"":"locked"}"><img src="${c[7]}" onerror="this.style.display='none'"><div class="info"><div class="name">${o?c[0]:"？？？？？？"}</div><span class="tag">${c[2]?"🎬 ワイスピ":"🏁 スーパーカー"}</span><div>${o?c[1]:"クイズでゲット！"}</div>${o?`<div class="spec">⚡ ${c[3]}　💨 ${c[5]}　⏱️ ${c[6]}　💰 ${c[4]}</div>`:""}</div></div>`}).join("")}
+function sound(reward=false){try{let A=window.AudioContext||window.webkitAudioContext;if(!A)return;ctx=ctx||new A();if(ctx.state==="suspended")ctx.resume();let n=ctx.currentTime,d=reward?.5:1.2,o=ctx.createOscillator(),g=ctx.createGain(),f=ctx.createBiquadFilter();o.type="sawtooth";o.frequency.setValueAtTime(reward?110:70,n);o.frequency.exponentialRampToValueAtTime(reward?280:190,n+d*.7);f.type="lowpass";f.frequency.value=900;g.gain.setValueAtTime(.0001,n);g.gain.exponentialRampToValueAtTime(.25,n+.05);g.gain.exponentialRampToValueAtTime(.0001,n+d);o.connect(f).connect(g).connect(ctx.destination);o.start(n);o.stop(n+d)}catch(e){}}
+</script></body></html>
